@@ -19,20 +19,16 @@ namespace OkMusic.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly UserRepository _userRepository;
-        private readonly MusicFileRepository _musicFileRepository;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="userRepository"></param>
-        /// <param name="musicFileRepository"></param>
-        public UserController(ILogger<UserController> logger, UserRepository userRepository,
-            MusicFileRepository musicFileRepository)
+        public UserController(ILogger<UserController> logger, UserRepository userRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
-            _musicFileRepository = musicFileRepository;
         }
 
         /// <summary>
@@ -72,17 +68,6 @@ namespace OkMusic.Controllers
         {
             user.UserId = id;
             _userRepository.Update(user);
-        }
-
-        /// <summary>
-        /// 上传Music文件
-        /// https://docs.microsoft.com/zh-cn/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0
-        /// </summary>
-        /// <param name="file"></param>
-        [HttpPost("favourite")]
-        public async Task Post(IFormFile file)
-        {
-            await _musicFileRepository.Add(file.FileName, file.OpenReadStream(), file.ContentType);
         }
     }
 }

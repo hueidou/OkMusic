@@ -29,6 +29,7 @@ namespace OkMusic.Repositories
         public void Update(User user)
         {
             _db.Users.Update(user);
+            _db.SaveChanges();
         }
 
         /// <summary>
@@ -48,6 +49,7 @@ namespace OkMusic.Repositories
         internal void Add(User user)
         {
             _db.Users.Add(user);
+            _db.SaveChanges();
         }
     }
 }

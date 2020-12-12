@@ -11,3 +11,13 @@ services:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
     command: server /data
+
+  sqlite-web:
+    image: coleifer/sqlite-web
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./OkMusic/sqlite:/data
+    environment: 
+      SQLITE_DATABASE: okmusic.db
