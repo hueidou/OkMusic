@@ -1,4 +1,15 @@
-public interface IMusicRepository
+namespace OkMusic.Domain
 {
-    public byte[] GetMusic(string fileName);
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IMusicRepository
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public byte[] GetMusic(string fileName);
+    }
 }

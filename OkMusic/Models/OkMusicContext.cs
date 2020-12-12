@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using OkMusic.Domain;
 
 namespace OkMusic.Models
 {
@@ -15,8 +16,12 @@ namespace OkMusic.Models
         public OkMusicContext(DbContextOptions<OkMusicContext> options)
           : base(options)
         {
+        }
 
-            public DbSet<User> Users { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public DbSet<User> Users { get; set; }
     }
-}
 }

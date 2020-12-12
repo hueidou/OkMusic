@@ -1,35 +1,70 @@
 using System;
 using System.Collections.Generic;
 
-public class UserDomain
+namespace OkMusic.Domain
 {
-    private readonly IMusicRepository _musicRepository;
-
-    public UserDomain(IMusicRepository musicRepository)
+    /// <summary>
+    /// 
+    /// </summary>
+    public class UserDomain
     {
-        _musicRepository = musicRepository;
-    }
+        private readonly IMusicRepository _musicRepository;
 
-    public Guid Id { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="musicRepository"></param>
+        public UserDomain(IMusicRepository musicRepository)
+        {
+            _musicRepository = musicRepository;
+        }
 
-    public string UserName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public Guid Id { get; set; }
 
-    public List<Music> MyMusics { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public string UserName { get; set; }
 
-    public void Upload(Music music)
-    {
-        MyMusics.Add(music);
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public List<Music> MyMusics { get; set; }
 
-    public byte[] Download(Guid musicId)
-    {
-        var music = MyMusics.Find(x => x.Id == musicId);
-        byte[] musicContent = _musicRepository.GetMusic(music.FileName);
-        return musicContent;
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="music"></param>
+        public void Upload(Music music)
+        {
+            MyMusics.Add(music);
+        }
 
-    public List<Music> GetMusics()
-    {
-        return MyMusics;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="musicId"></param>
+        /// <returns></returns>
+        public byte[] Download(Guid musicId)
+        {
+            var music = MyMusics.Find(x => x.Id == musicId);
+            byte[] musicContent = _musicRepository.GetMusic(music.FileName);
+            return musicContent;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<Music> GetMusics()
+        {
+            return MyMusics;
+        }
     }
 }

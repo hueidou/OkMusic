@@ -13,10 +13,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OkMusic.Models;
+using Amazon.S3;
+using OkMusic.Domain;
+using OkMusic.Repositories;
+using Evorine.FileSystem.S3FileProvider;
+using Amazon;
 
 namespace OkMusic
 {
-
 #pragma warning disable CS1591
     public class Startup
     {
@@ -40,6 +44,14 @@ namespace OkMusic
 
             services.AddDbContext<OkMusicContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("OkMusicDatabase")));
+
+            // https://docs.ceph.com/en/latest/radosgw/s3/csharp/
+            services.AddTransient<Amazon.S3.IAmazonS3>(serviceProvider =>
+                new AmazonS3Client(Configuration["S3:AccessKey"], Configuration["S3:SecretKey"], 
+                new AmazonS3Config { ServiceURL = Configuration["S3:Endpoint"], ForcePathStyle = true }));
+
+            services.AddTransient<UserRepository>();
+            services.AddTransient<MusicFileRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +65,19 @@ namespace OkMusic
             }
 
             app.UseHttpsRedirection();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            // https://github.com/evorine/S3FileProvider
+            var amazonS3 = app.ApplicationServices.GetService<Amazon.S3.IAmazonS3>();
+            var fileProvider = new S3FileProvider(amazonS3, Configuration["S3:BucketName"]);
+            var staticFilesOption = new StaticFileOptions()
+            {
+                RequestPath = "/static",
+                FileProvider = fileProvider
+            };
+            app.UseStaticFiles(staticFilesOption);
 
             app.UseRouting();
 

@@ -1,50 +1,94 @@
 using System.Collections.Generic;
 
-public class OkHall
+namespace OkMusic.Domain
 {
-    public List<User> Users { get; set; }
-
-    public JukeBox JukeBox { get; set; }
-
-    public void JoinUser(User user)
+    /// <summary>
+    /// 
+    /// </summary>
+    public class OkHall
     {
-        Users.Add(user);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public List<User> Users { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public JukeBox JukeBox { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        public void JoinUser(User user)
+        {
+            Users.Add(user);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        public void LeaveUser(User user)
+        {
+            Users.RemoveAll(x => x.UserId == user.UserId);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="music"></param>
+        public void ChooseMusic(Music music)
+        {
+            JukeBox.PushMusic(music);
+        }
     }
 
-    public void LeaveUser(User user)
+    ///<summary>
+    /// 点唱机
+    ///</summary>
+    public class JukeBox
     {
-        Users.RemoveAll(x => x.Id == user.Id);
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        private Stack<Music> Playlist { get; set; }
 
-    public void ChooseMusic(Music music)
-    {
-        JukeBox.PushMusic(music);
-    }
-}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public Music Current { get; set; }
 
-///<summary>
-/// 点唱机
-///</summary>
-public class JukeBox
-{
-    private Stack<Music> Playlist { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="music"></param>
+        public void PushMusic(Music music)
+        {
+            Playlist.Push(music);
+        }
 
-    public Music Current { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Next()
+        {
+            // 移除当前
+            Playlist.Pop();
+            Current = Playlist.Peek();
+        }
 
-    public void PushMusic(Music music)
-    {
-        Playlist.Push(music);
-    }
-
-    public void Next()
-    {
-        // 移除当前
-        Playlist.Pop();
-        Current = Playlist.Peek();
-    }
-
-    public void OnCurrentEnd()
-    {
-        Next();
+        /// <summary>
+        /// 
+        /// </summary>
+        public void OnCurrentEnd()
+        {
+            Next();
+        }
     }
 }

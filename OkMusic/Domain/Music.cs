@@ -1,10 +1,25 @@
 using System;
 
-public class Music
+namespace OkMusic.Domain
 {
-    public Guid Id { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Music
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid Id { get; set; }
 
-    public string Title { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Title { get; set; }
 
-    public string FileName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string FileName { get; set; }
+    }
 }
