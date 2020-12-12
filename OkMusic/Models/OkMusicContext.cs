@@ -23,5 +23,11 @@ namespace OkMusic.Models
         /// </summary>
         /// <value></value>
         public DbSet<User> Users { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public DbSet<FavouriteMusic> FavouriteMusics { get; set; }
     }
 }

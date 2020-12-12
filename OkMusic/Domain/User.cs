@@ -19,8 +19,8 @@ namespace OkMusic.Domain
         public string UserName { get; set; }
 
         /// <summary>
-        /// 我的音乐列表
+        /// 收藏音乐列表
         /// </summary>
-        public List<Music> MyMusics { get; set; }
+        public List<FavouriteMusic> FavouriteMusics { get; set; }
     }
 }

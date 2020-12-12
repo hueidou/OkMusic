@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OkMusic.Domain;
 using OkMusic.Models;
@@ -50,6 +52,33 @@ namespace OkMusic.Repositories
         {
             _db.Users.Add(user);
             _db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        internal async Task<List<FavouriteMusic>> GetFavouriteMusics(Guid userId)
+        {
+            var user = await _db.Users.SingleOrDefaultAsync(x => x.UserId == userId);
+
+            // https://docs.microsoft.com/zh-cn/ef/core/querying/related-data/explicit
+            await _db.Entry(user).Collection(x => x.FavouriteMusics).LoadAsync();
+
+            return user.FavouriteMusics;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="music"></param>
+        /// <returns></returns>
+        internal async Task AddFavouriteMusic(FavouriteMusic music)
+        {
+            await _db.FavouriteMusics.AddAsync(music);
+            await _db.SaveChangesAsync();
         }
     }
 }

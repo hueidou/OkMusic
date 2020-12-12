@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -36,14 +37,41 @@ namespace OkMusic.Controllers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<List<FavouriteMusic>> Get()
+        {
+            string userIdStr = Request.Cookies["userId"];
+            var userId = Guid.Parse(userIdStr);
+
+            return await _userRepository.GetFavouriteMusics(userId);
+        }
+
+        /// <summary>
         /// 上传Music文件
         /// https://docs.microsoft.com/zh-cn/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0
         /// </summary>
         /// <param name="file"></param>
-        [HttpPost("favourite")]
+        [HttpPost]
         public async Task Post(IFormFile file)
         {
-            await _musicFileRepository.Add(file.FileName, file.OpenReadStream(), file.ContentType);
+            string userIdStr = Request.Cookies["userId"];
+            var userId = Guid.Parse(userIdStr);
+
+            var fileName = file.FileName;
+
+            await _musicFileRepository.Add(fileName, file.OpenReadStream(), file.ContentType);
+
+            var music = new FavouriteMusic
+            {
+                Id = Guid.NewGuid(),
+                FileName = fileName,
+                Title = Path.GetFileNameWithoutExtension(fileName),
+                UserId = userId
+            };
+            await _userRepository.AddFavouriteMusic(music);
         }
     }
 }
