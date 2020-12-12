@@ -18,6 +18,7 @@ using OkMusic.Domain;
 using OkMusic.Repositories;
 using Evorine.FileSystem.S3FileProvider;
 using Amazon;
+using System.IO;
 
 namespace OkMusic
 {
