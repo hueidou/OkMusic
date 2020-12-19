@@ -1,19 +1,29 @@
 <template>
-  <audio :src="current.url" autoplay></audio>
-  <el-table :data="playlist" :show-header="false">
-    <el-table-column type="index" width="50"> </el-table-column>
-    <el-table-column width="50">
-      <template #default="scope">
-        <span>{{ scope.row.playing ? ">" : "" }}</span>
-      </template>
-    </el-table-column>
-    <el-table-column prop="title"> </el-table-column>
-  </el-table>
-  <span>{{ current.title }}</span>
-  <button @click="next()">next</button>
+  <el-card>
+    <template #header>
+      <h1>OkHall</h1>
+    </template>
+    <audio v-if="current != null" :src="currentUrl" autoplay></audio>
+    <el-table :data="playlist" :show-header="false">
+      <el-table-column type="index" width="50"> </el-table-column>
+      <el-table-column width="50">
+        <template #default="scope">
+          <span>{{ scope.row.playId == current.playId ? ">" : "" }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="title"> </el-table-column>
+      <el-table-column prop="duration" :formatter="durationFormatter">
+      </el-table-column>
+      <el-table-column prop="creator"> </el-table-column>
+    </el-table>
+    <span>{{ current != null ? current.title : "" }}</span>
+    <button @click="next()">next</button>
+  </el-card>
 </template>
 
 <script>
+import * as signalR from "@microsoft/signalr";
+
 export default {
   name: "OkHall",
   props: {
@@ -21,51 +31,89 @@ export default {
   },
   data() {
     return {
+      users: [],
       playlist: [],
+      current: null,
     };
   },
   created() {
-    this.current
-    this.playlist = [
-      {
-        id: "1",
-        title: "放漾（电影《反转人生》插曲）",
-        url:
-          "https://m701.music.126.net/20201204234223/b0e7c08f94cbac8f420ab48f56743045/jdyyaac/545b/0e52/010c/c1bc05bab3981c2f5c266f5b9420eafa.m4a",
-      },
-      {
-        id: "2",
-        title: "The End of the World",
-        url:
-          "https://m701.music.126.net/20201204234305/1609e389331a32fa47cd11fd8a2916c7/jdyyaac/015f/565d/0753/65fd473809a77035d120098452a6447f.m4a",
-      },
-      {
-        id: "3",
-        title: "生命中最美丽的一天",
-        url:
-          "https://m10.music.126.net/20201204234336/d7165e1c8ca75cdeefed206d9da9028f/yyaac/obj/wonDkMOGw6XDiTHCmMOi/3058336168/c6bb/4ce4/3ad5/d184f02f3b78e785aff7b9182522e922.m4a",
-      },
-      {
-        id: "4",
-        title: "你是人间四月天",
-        url:
-          "https://m701.music.126.net/20201204234148/dc4310a6c69fb2f0dcb27f16f3c17f1d/jdyyaac/5359/0e5b/0f08/d3d17e41b791880207018ba78a8ad95d.m4a",
-      },
-    ];
+    var connection = new signalR.HubConnectionBuilder()
+      .withUrl("/ws/okhall")
+      .build();
+
+    connection.on("Next", this.onNext);
+    connection.on("NewUserJoin", this.onNewUserJoin);
+    connection.on("UserLeave", this.onUserLeave);
+    connection.on("OkHall", this.onOkHall);
+    connection.on("SendMessage", this.onSendMessage);
+    connection.on("Push", this.onPush);
+
+    connection
+      .start()
+      .then(this.onStart)
+      .catch(function (err) {
+        return console.error(err.toString());
+      });
+
+    window.vue = this;
+    window.conn = connection;
   },
   computed: {
-    current() {
-      var current =
-        this.playlist.length != 0
-          ? this.playlist[0]
-          : { title: "no item", url: "" };
-      current.playing = true;
-      return current;
+    currentUrl() {
+      return this.current != null ? "/static/" + this.current.fileName : "";
     },
   },
   methods: {
+    durationFormatter(row, column, cellValue, index) {
+      var date = new Date(cellValue);
+      return date.getMinutes() + ":" + date.getSeconds();
+    },
+    onStart() {
+      console.log("Start");
+    },
+    onOkHall(okHall) {
+      console.log("OkHall:" + JSON.stringify(okHall));
+      this.playlist = okHall.jukeBox.playlist;
+      this.users = okHall.users;
+
+      if (
+        this.playlist != null &&
+        this.playlist.length != 0 &&
+        okHall.jukeBox.current != null
+      ) {
+        this.current = this.playlist.find(
+          (x) => x.playId == okHall.jukeBox.current.playId
+        );
+        this.current.playing = true;
+      }
+    },
+    onNext(playId) {
+      this.current = this.playlist.find((x) => x.playId == playId);
+      console.log("Next:" + playId);
+    },
+    onNewUserJoin() {
+      console.log("NewUserJoin:");
+    },
+    onUserLeave() {
+      console.log("UserLeave:");
+    },
+    onSendMessage(message) {
+      console.log("SendMessage:" + message);
+    },
+    onPush(jukeBoxMusic) {
+      this.playlist.push(jukeBoxMusic);
+      console.log("Push:" + JSON.stringify(jukeBoxMusic));
+    },
     next() {
-      this.playlist.shift();
+      var index = this.playlist.findIndex(
+        (x) => x.playId == this.current.playId
+      );
+      if (index < this.playlist.length - 1) {
+        index++;
+        this.current = this.playlist[index];
+
+        window.conn.invoke("Next", this.current.playId);
+      }
     },
   },
 };
