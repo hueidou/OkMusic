@@ -16,7 +16,7 @@ namespace OkMusic.Controllers
     /// 
     /// </summary>
     [ApiController]
-    [Route("user/favourites")]
+    [Route("api/user/favourites")]
     public class UserFavouriteController : ControllerBase
     {
         private readonly ILogger<UserFavouriteController> _logger;

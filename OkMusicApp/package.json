@@ -6,6 +6,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@microsoft/signalr": "^5.0.1",
     "element-plus": "latest",
     "vue": "^3.0.4"
   },

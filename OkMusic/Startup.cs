@@ -19,6 +19,7 @@ using OkMusic.Repositories;
 using Evorine.FileSystem.S3FileProvider;
 using Amazon;
 using System.IO;
+using OkMusic.SignalR;
 
 namespace OkMusic
 {
@@ -54,6 +55,9 @@ namespace OkMusic
             services.AddTransient<UserRepository>();
             services.AddTransient<MusicFileRepository>();
             services.AddTransient<MusicRepository>();
+
+            services.AddSingleton<OkHall>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +70,7 @@ namespace OkMusic
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OkMusic v1"));
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -88,6 +92,7 @@ namespace OkMusic
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<OkHallHub>("/ws/okhall");
             });
         }
     }

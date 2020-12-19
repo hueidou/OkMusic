@@ -8,6 +8,10 @@ namespace OkMusic.Domain
     /// </summary>
     public class FavouriteMusic
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
         [Key]
         public int FavouriteMusicId {get;set;}
 
@@ -17,6 +21,10 @@ namespace OkMusic.Domain
         /// <value></value>
         public Guid UserId { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
         public Music Music { get; set; }
 
         /// <summary>

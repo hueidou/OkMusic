@@ -15,9 +15,9 @@ namespace OkMusic.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class MusicsController : ControllerBase
+    public class OkHallController : ControllerBase
     {
-        private readonly ILogger<MusicsController> _logger;
+        private readonly ILogger<OkHallController> _logger;
         private readonly UserRepository _userRepository;
         private readonly MusicRepository _musicRepository;
 
@@ -27,7 +27,7 @@ namespace OkMusic.Controllers
         /// <param name="logger"></param>
         /// <param name="userRepository"></param>
         /// <param name="musicRepository"></param>
-        public MusicsController(ILogger<MusicsController> logger, UserRepository userRepository,
+        public OkHallController(ILogger<OkHallController> logger, UserRepository userRepository,
             MusicRepository musicRepository)
         {
             _logger = logger;

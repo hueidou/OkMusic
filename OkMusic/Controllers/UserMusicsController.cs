@@ -17,7 +17,7 @@ namespace OkMusic.Controllers
     /// 
     /// </summary>
     [ApiController]
-    [Route("user/musics")]
+    [Route("api/user/musics")]
     public class UserMusicsController : ControllerBase
     {
         private readonly ILogger<UserMusicsController> _logger;

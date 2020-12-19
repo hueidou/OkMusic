@@ -5,14 +5,53 @@
 </template>
 
 <script>
-import OkHall from './components/OkHall.vue'
-import FavouriteList from './components/FavouriteList.vue'
+import OkHall from "./components/OkHall.vue";
+import FavouriteList from "./components/FavouriteList.vue";
+import * as signalR from "@microsoft/signalr";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     OkHall,
-    FavouriteList
-  }
-}
+    FavouriteList,
+  },
+  created() {
+
+    var connection = new signalR.HubConnectionBuilder()
+      .withUrl("/ws/okhall")
+      .build();
+
+    connection.on("Next", function (playId) {
+      console.log("Next:" + playId);
+    });
+
+    connection.on("NewUserJoin", function () {
+      console.log("NewUserJoin:");
+    });
+
+    connection.on("UserLeave", function () {
+      console.log("UserLeave:");
+    });
+
+    connection.on("OkHall", function (okHall) {
+      console.log("OkHall:" + okHall);
+    });
+
+    connection.on("SendMessage", function (message) {
+      console.log("SendMessage:" + message);
+    });
+
+    connection
+      .start()
+      .then(function () {
+        console.log("Start");
+      })
+      .catch(function (err) {
+        return console.error(err.toString());
+      });
+
+    window.vue = this;
+    window.conn = connection;
+  },
+};
 </script>
