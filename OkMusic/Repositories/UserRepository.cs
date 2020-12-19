@@ -66,18 +66,38 @@ namespace OkMusic.Repositories
             // https://docs.microsoft.com/zh-cn/ef/core/querying/related-data/explicit
             await _db.Entry(user).Collection(x => x.FavouriteMusics).LoadAsync();
 
+            foreach (var item in user.FavouriteMusics)
+            {
+                await _db.Entry(item).Reference(x => x.Music).LoadAsync();
+            }
+
             return user.FavouriteMusics;
         }
 
+        internal async Task AddFavouriteMusic(Guid userId, int musicId)
+        {
+            var music = await _db.Musics.SingleAsync(x => x.Id == musicId);
+
+            await AddFavouriteMusic(userId, music);
+        }
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="userId"></param>
         /// <param name="music"></param>
         /// <returns></returns>
-        internal async Task AddFavouriteMusic(FavouriteMusic music)
+        internal async Task AddFavouriteMusic(Guid userId, Music music)
         {
-            await _db.FavouriteMusics.AddAsync(music);
+            // FavouriteMusic
+            var favouriteMusic = new FavouriteMusic
+            {
+                UserId = userId,
+                Music = music,
+                FavouriteTime = DateTime.Now
+            };
+            
+            await _db.FavouriteMusics.AddAsync(favouriteMusic);
             await _db.SaveChangesAsync();
         }
     }

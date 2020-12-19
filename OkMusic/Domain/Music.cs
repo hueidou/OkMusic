@@ -10,7 +10,7 @@ namespace OkMusic.Domain
         /// <summary>
         /// 
         /// </summary>
-        public Guid Id { get; set; }
+        public int MusicId { get; set; }
 
         /// <summary>
         /// 

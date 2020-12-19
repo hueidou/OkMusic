@@ -51,7 +51,7 @@ namespace OkMusic.Domain
         /// </summary>
         /// <param name="musicId"></param>
         /// <returns></returns>
-        public byte[] Download(Guid musicId)
+        public byte[] Download(int musicId)
         {
             var music = MyMusics.Find(x => x.Id == musicId);
             byte[] musicContent = _musicRepository.GetMusic(music.FileName);
