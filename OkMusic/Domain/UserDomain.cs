@@ -53,7 +53,7 @@ namespace OkMusic.Domain
         /// <returns></returns>
         public byte[] Download(int musicId)
         {
-            var music = MyMusics.Find(x => x.Id == musicId);
+            var music = MyMusics.Find(x => x.MusicId == musicId);
             byte[] musicContent = _musicRepository.GetMusic(music.FileName);
             return musicContent;
         }

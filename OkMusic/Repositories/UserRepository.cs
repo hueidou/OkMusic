@@ -76,7 +76,7 @@ namespace OkMusic.Repositories
 
         internal async Task AddFavouriteMusic(Guid userId, int musicId)
         {
-            var music = await _db.Musics.SingleAsync(x => x.Id == musicId);
+            var music = await _db.Musics.SingleAsync(x => x.MusicId == musicId);
 
             await AddFavouriteMusic(userId, music);
         }
@@ -96,7 +96,7 @@ namespace OkMusic.Repositories
                 Music = music,
                 FavouriteTime = DateTime.Now
             };
-            
+
             await _db.FavouriteMusics.AddAsync(favouriteMusic);
             await _db.SaveChangesAsync();
         }
