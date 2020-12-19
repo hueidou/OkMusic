@@ -14,7 +14,7 @@ namespace OkMusic.SignalR
         /// </summary>
         /// <param name="playId"></param>
         /// <returns></returns>
-        Task Next(int playId);
+        Task Next(Guid playId);
 
         /// <summary>
         /// 
@@ -41,5 +41,12 @@ namespace OkMusic.SignalR
         /// <param name="message"></param>
         /// <returns></returns>
         Task SendMessage(string message);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jukeBoxMusic"></param>
+        /// <returns></returns>
+        Task Push(JukeBoxMusic jukeBoxMusic);
     }
 }

@@ -34,11 +34,15 @@ export default {
     });
 
     connection.on("OkHall", function (okHall) {
-      console.log("OkHall:" + okHall);
+      console.log("OkHall:" + JSON.stringify(okHall));
     });
 
     connection.on("SendMessage", function (message) {
       console.log("SendMessage:" + message);
+    });
+
+    connection.on("Push", function (jukeBoxMusic) {
+      console.log("Push:" + JSON.stringify(jukeBoxMusic));
     });
 
     connection

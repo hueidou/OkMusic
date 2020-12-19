@@ -20,6 +20,8 @@ using Evorine.FileSystem.S3FileProvider;
 using Amazon;
 using System.IO;
 using OkMusic.SignalR;
+using AutoMapper;
+using OkMusic.AutoMapper;
 
 namespace OkMusic
 {
@@ -49,15 +51,20 @@ namespace OkMusic
 
             // https://docs.ceph.com/en/latest/radosgw/s3/csharp/
             services.AddTransient<Amazon.S3.IAmazonS3>(serviceProvider =>
-                new AmazonS3Client(Configuration["S3:AccessKey"], Configuration["S3:SecretKey"], 
+                new AmazonS3Client(Configuration["S3:AccessKey"], Configuration["S3:SecretKey"],
                 new AmazonS3Config { ServiceURL = Configuration["S3:Endpoint"], ForcePathStyle = true }));
 
             services.AddTransient<UserRepository>();
             services.AddTransient<MusicFileRepository>();
             services.AddTransient<MusicRepository>();
 
-            services.AddSingleton<OkHall>();
+            services.AddSingleton<OkMusic.Domain.OkHall>();
             services.AddSignalR();
+
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<AutoMapperProfile>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

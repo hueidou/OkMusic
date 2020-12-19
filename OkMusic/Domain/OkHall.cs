@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OkMusic.Domain
 {
@@ -7,17 +9,42 @@ namespace OkMusic.Domain
     /// </summary>
     public class OkHall
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <value></value>
-        public List<User> Users { get; set; }
+        private List<User> users;
+        private JukeBox jukeBox;
 
         /// <summary>
         /// 
         /// </summary>
         /// <value></value>
-        public JukeBox JukeBox { get; set; }
+        public List<User> Users
+        {
+            get
+            {
+                if (users == null)
+                {
+                    users = new List<User>();
+                }
+
+                return users;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public JukeBox JukeBox
+        {
+            get
+            {
+                if (jukeBox == null)
+                {
+                    jukeBox = new JukeBox();
+                }
+
+                return jukeBox;
+            }
+        }
 
         /// <summary>
         /// 
@@ -47,22 +74,47 @@ namespace OkMusic.Domain
         }
     }
 
-    ///<summary>
-    /// 点唱机
-    ///</summary>
-    public class JukeBox
+    /// <summary>
+    /// 
+    /// </summary>
+    public class JukeBoxMusic : Music
     {
         /// <summary>
         /// 
         /// </summary>
         /// <value></value>
-        private Stack<Music> Playlist { get; set; }
+        public Guid PlayId { get; set; }
+    }
+
+    ///<summary>
+    /// 点唱机
+    ///</summary>
+    public class JukeBox
+    {
+        private Stack<JukeBoxMusic> playlist;
 
         /// <summary>
         /// 
         /// </summary>
         /// <value></value>
-        public Music Current { get; set; }
+        public Stack<JukeBoxMusic> Playlist
+        {
+            get
+            {
+                if (playlist == null)
+                {
+                    playlist = new Stack<JukeBoxMusic>();
+                }
+
+                return playlist;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public JukeBoxMusic Current { get; set; }
 
         /// <summary>
         /// 
@@ -70,7 +122,9 @@ namespace OkMusic.Domain
         /// <param name="music"></param>
         public void PushMusic(Music music)
         {
-            Playlist.Push(music);
+            // TODO
+            JukeBoxMusic jukeBoxMusic = (JukeBoxMusic)music;
+            Playlist.Push(jukeBoxMusic);
         }
 
         /// <summary>
@@ -89,6 +143,12 @@ namespace OkMusic.Domain
         public void OnCurrentEnd()
         {
             Next();
+        }
+
+        internal void SetCurrent(Guid playId)
+        {
+            var jukeBoxMusic = Playlist.Single(x => x.PlayId == playId);
+            Current = jukeBoxMusic;
         }
     }
 }

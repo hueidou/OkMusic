@@ -20,6 +20,7 @@ namespace OkMusic.Controllers
         private readonly ILogger<OkHallController> _logger;
         private readonly UserRepository _userRepository;
         private readonly MusicRepository _musicRepository;
+        private readonly OkHall _okHall;
 
         /// <summary>
         /// 
@@ -27,12 +28,15 @@ namespace OkMusic.Controllers
         /// <param name="logger"></param>
         /// <param name="userRepository"></param>
         /// <param name="musicRepository"></param>
+        /// <param name="okHall"></param>
         public OkHallController(ILogger<OkHallController> logger, UserRepository userRepository,
-            MusicRepository musicRepository)
+            MusicRepository musicRepository,
+            OkHall okHall)
         {
             _logger = logger;
             _userRepository = userRepository;
             _musicRepository = musicRepository;
+            _okHall = okHall;
         }
 
         /// <summary>
@@ -40,20 +44,9 @@ namespace OkMusic.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<Music>> Get()
+        public async Task<OkHall> Get()
         {
-            return await _musicRepository.GetMusics();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        [HttpGet("{userId}")]
-        public async Task<List<Music>> GetUserMusics(Guid userId)
-        {
-            return await _musicRepository.GetUserMusics(userId);
+            return _okHall;
         }
     }
 }

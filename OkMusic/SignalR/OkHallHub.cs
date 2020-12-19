@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using OkMusic.Domain;
+using OkMusic.Models;
 
 namespace OkMusic.SignalR
 {
@@ -11,14 +14,20 @@ namespace OkMusic.SignalR
     public class OkHallHub : Hub<IOkHall>
     {
         private readonly OkHall _okHall;
+        private readonly OkMusicContext _db;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="okHall"></param>
-        public OkHallHub(OkHall okHall)
+        /// <param name="db"></param>
+        /// <param name="mapper"></param>
+        public OkHallHub(OkHall okHall, OkMusicContext db, IMapper mapper)
         {
             _okHall = okHall;
+            _db = db;
+            _mapper = mapper;
         }
 
         private const string groupName = "okhall";
@@ -28,9 +37,25 @@ namespace OkMusic.SignalR
         /// </summary>
         /// <param name="playId"></param>
         /// <returns></returns>
-        public async Task Next(int playId)
+        public async Task Next(Guid playId)
         {
+            _okHall.JukeBox.SetCurrent(playId);
             await Clients.Group(groupName).Next(playId);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="musicId"></param>
+        /// <returns></returns>
+        public async Task Push(int musicId)
+        {
+            var music = _db.Musics.Single(x => x.MusicId == musicId);
+            var jukeBoxMusic = _mapper.Map<JukeBoxMusic>(music);
+
+            _okHall.JukeBox.Playlist.Push(jukeBoxMusic);
+
+            await Clients.Group(groupName).Push(jukeBoxMusic);
         }
 
         /// <summary>
