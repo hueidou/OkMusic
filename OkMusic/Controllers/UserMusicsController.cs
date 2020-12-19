@@ -16,12 +16,13 @@ namespace OkMusic.Controllers
     /// 
     /// </summary>
     [ApiController]
-    [Route("user/favourite")]
-    public class UserFavouriteController : ControllerBase
+    [Route("user/musics")]
+    public class UserMusicsController : ControllerBase
     {
-        private readonly ILogger<UserFavouriteController> _logger;
+        private readonly ILogger<UserMusicsController> _logger;
         private readonly UserRepository _userRepository;
         private readonly MusicFileRepository _musicFileRepository;
+        private readonly MusicRepository _musicRepository;
 
         /// <summary>
         /// 
@@ -29,12 +30,15 @@ namespace OkMusic.Controllers
         /// <param name="logger"></param>
         /// <param name="userRepository"></param>
         /// <param name="musicFileRepository"></param>
-        public UserFavouriteController(ILogger<UserFavouriteController> logger, UserRepository userRepository,
-            MusicFileRepository musicFileRepository)
+        /// <param name="musicRepository"></param>
+        public UserMusicsController(ILogger<UserMusicsController> logger, UserRepository userRepository,
+            MusicFileRepository musicFileRepository,
+            MusicRepository musicRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
             _musicFileRepository = musicFileRepository;
+            _musicRepository = musicRepository;
         }
 
         /// <summary>
@@ -42,12 +46,12 @@ namespace OkMusic.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<FavouriteMusic>> Get()
+        public async Task<List<Music>> Get()
         {
             string userIdStr = Request.Cookies["userId"];
             var userId = Guid.Parse(userIdStr);
 
-            return await _userRepository.GetFavouriteMusics(userId);
+            return await _musicRepository.GetUserMusics(userId);
         }
 
         /// <summary>
@@ -66,23 +70,9 @@ namespace OkMusic.Controllers
 
             await _musicFileRepository.Add(fileName, file.OpenReadStream(), file.ContentType);
 
-            // Music
-            var music = new Music
-            {
-                FileName = fileName,
-                Title = title
-            };
 
+            var music = await _musicRepository.AddMusic(userId, fileName, title);
             await _userRepository.AddFavouriteMusic(userId, music);
-        }
-
-        [HttpPost]
-        public async Task Post(int musicId)
-        {
-            string userIdStr = Request.Cookies["userId"];
-            var userId = Guid.Parse(userIdStr);
-
-            await _userRepository.AddFavouriteMusic(userId, musicId);
         }
 
         /// <summary>

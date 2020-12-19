@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using OkMusic.Domain;
 using OkMusic.Models;
 
-namespace OkMusic.Repositories 
+namespace OkMusic.Repositories
 {
     /// <summary>
     /// 
@@ -81,12 +81,6 @@ namespace OkMusic.Repositories
             await AddFavouriteMusic(userId, music);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="music"></param>
-        /// <returns></returns>
         internal async Task AddFavouriteMusic(Guid userId, Music music)
         {
             // FavouriteMusic

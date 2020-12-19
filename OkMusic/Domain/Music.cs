@@ -21,5 +21,17 @@ namespace OkMusic.Domain
         /// 
         /// </summary>
         public string FileName { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public DateTime CreateTime { get;set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public Guid Creator { get;set; }
     }
 }

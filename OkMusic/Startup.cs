@@ -53,6 +53,7 @@ namespace OkMusic
 
             services.AddTransient<UserRepository>();
             services.AddTransient<MusicFileRepository>();
+            services.AddTransient<MusicRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
