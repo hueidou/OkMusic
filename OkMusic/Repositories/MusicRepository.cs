@@ -40,8 +40,9 @@ namespace OkMusic.Repositories
         /// <param name="userId"></param>
         /// <param name="fileName"></param>
         /// <param name="title"></param>
+        /// <param name="duration"></param>
         /// <returns></returns>
-        internal async Task<Music> AddMusic(Guid userId, string fileName, string title)
+        internal async Task<Music> AddMusic(Guid userId, string fileName, string title, double duration)
         {
             var user = await _db.Users.SingleAsync(x => x.UserId == userId);
 
@@ -49,6 +50,7 @@ namespace OkMusic.Repositories
             {
                 FileName = fileName,
                 Title = title,
+                Duration = duration,
                 Creator = user.UserId,
                 CreateTime = DateTime.Now
             };

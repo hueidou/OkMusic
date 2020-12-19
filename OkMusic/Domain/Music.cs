@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OkMusic.Domain
 {
@@ -26,12 +27,18 @@ namespace OkMusic.Domain
         /// 
         /// </summary>
         /// <value></value>
-        public DateTime CreateTime { get;set; }
+        public double Duration { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <value></value>
-        public Guid Creator { get;set; }
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public Guid Creator { get; set; }
     }
 }

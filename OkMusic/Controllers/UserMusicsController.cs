@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OkMusic.Common;
 using OkMusic.Domain;
 using OkMusic.Repositories;
 
@@ -68,10 +69,14 @@ namespace OkMusic.Controllers
             var title = Path.GetFileNameWithoutExtension(file.FileName);
             var fileName = GetStorageFileName(file.FileName);
 
-            await _musicFileRepository.Add(fileName, file.OpenReadStream(), file.ContentType);
+            var fileStream = file.OpenReadStream();
+            await _musicFileRepository.Add(fileName, fileStream, file.ContentType);
 
+            //
+            var tagFile = TagLib.File.Create(new StreamFileAbstraction { Name = file.FileName, ReadStream = file.OpenReadStream() });
+            var duration = tagFile.Properties.Duration.TotalMilliseconds;
 
-            var music = await _musicRepository.AddMusic(userId, fileName, title);
+            var music = await _musicRepository.AddMusic(userId, fileName, title, duration);
             await _userRepository.AddFavouriteMusic(userId, music);
         }
 
