@@ -16,6 +16,12 @@ namespace OkMusic.Domain
         /// 
         /// </summary>
         /// <value></value>
+        public string Master { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
         public List<User> Users
         {
             get

@@ -84,6 +84,17 @@ namespace OkMusic.SignalR
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="master"></param>
+        /// <returns></returns>
+        public async Task SetMaster(string master)
+        {
+            await Clients.Group(groupName).SetMaster(master);
+            _okHall.Master = master;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         public override async Task OnConnectedAsync()
         {

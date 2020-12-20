@@ -48,5 +48,12 @@ namespace OkMusic.SignalR
         /// <param name="jukeBoxMusic"></param>
         /// <returns></returns>
         Task Push(JukeBoxMusic jukeBoxMusic);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="master"></param>
+        /// <returns></returns>
+        Task SetMaster(string master);
     }
 }
