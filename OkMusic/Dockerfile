@@ -16,14 +16,14 @@ RUN dotnet build "OkMusic.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "OkMusic.csproj" -c Release -o /app/publish
 
-# Ç°¶Ë¹¹½¨
+# å‰ç«¯æ„å»º
 FROM node:12-alpine as build-fe
 WORKDIR /src
 COPY OkMusicApp/package.json ./
 COPY OkMusicApp/yarn.lock ./
 
 RUN yarn
-COPY ResearchIntegritySiteApp ./
+COPY OkMusicApp ./
 RUN yarn build
 
 FROM base AS final

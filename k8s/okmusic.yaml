@@ -1,0 +1,85 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: okmusic
+  namespace: okmusic
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: okmusic.sanrabbit.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: okmusic
+              servicePort: 80
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: okmusic
+  namespace: okmusic
+  labels:
+    k8s-app: okmusic
+spec:
+  ports:
+    - name: tcp
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    k8s-app: okmusic
+  type: ClusterIP
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: okmusic
+  namespace: okmusic
+  labels:
+    k8s-app: okmusic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: okmusic
+  template:
+    metadata:
+      name: okmusic
+      labels:
+        k8s-app: okmusic
+    spec:
+      volumes:
+        - name: okmusic-data
+          persistentVolumeClaim:
+            claimName: okmusic
+      containers:
+        - name: okmusic
+          image: hueidou/okmusic
+          resources: 
+            limits:
+              #cpu: "500m"
+              #memory: "300Mi"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: ConnectionStrings__OkMusicDatabase
+              value: Data Source=/data/okmusic.db
+            - name: S3__Endpoint
+              value: http://minio.wfks:9000
+            - name: S3__AccessKey
+              value: minio
+            - name: S3__SecretKey
+              value: minio123
+            - name: S3__BucketName
+              value: okmusic
+          volumeMounts:
+            - name: okmusic-data
+              mountPath: /data
+      restartPolicy: Always
