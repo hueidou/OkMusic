@@ -18,7 +18,7 @@ RUN dotnet publish "OkMusic.csproj" -c Release -o /app/publish
 
 # 前端构建
 FROM node:12-alpine as build-fe
-WORKDIR /src
+WORKDIR /fe-src
 COPY OkMusicApp/package.json ./
 COPY OkMusicApp/yarn.lock ./
 
@@ -29,5 +29,5 @@ RUN yarn build
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY --from=build-fe /src/dist ./wwwroot
+COPY --from=build-fe /fe-src/dist ./wwwroot
 ENTRYPOINT ["dotnet", "OkMusic.dll"]
